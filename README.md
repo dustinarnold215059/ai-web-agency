@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # WebCraft AI - AI-Powered Web Design Agency
 
 A modern, professional website for an AI-powered web design agency that specializes in creating affordable, high-quality websites for small businesses.
@@ -175,3 +176,6 @@ This website is specifically designed for small businesses looking for:
 ---
 
 Built with ❤️ for small businesses looking to grow online.
+=======
+# ai-web-agency
+>>>>>>> ba17260e742bcf5263a72ff9f814249d58351c04
