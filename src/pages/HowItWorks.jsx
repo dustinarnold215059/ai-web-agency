@@ -133,7 +133,7 @@ const HowItWorks = () => {
       cons: ['Very expensive', 'Long timeline', 'Multiple stakeholders', 'Scope creep'],
     },
     aiPowered: {
-      title: 'WebCraft AI Process',
+      title: 'Every Man\'s Website Design Process',
       timeline: '5-7 Days',
       cost: '$997 - $1,497',
       process: [
@@ -142,7 +142,7 @@ const HowItWorks = () => {
         'Human refinement (Days 4-5)',
         'Review & launch (Days 6-7)',
       ],
-      pros: ['Lightning fast delivery', 'Affordable pricing', 'AI + Human expertise', 'Guaranteed timeline'],
+      pros: ['Lightning fast delivery', 'Affordable pricing', 'AI + Human expertise', 'Guaranteed timeline', 'Fully custom design', 'Dedicated team'],
       cons: ['Less customization than $15k projects'],
     },
   };

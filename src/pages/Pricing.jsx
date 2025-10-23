@@ -1,14 +1,11 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { StarIcon, ClockIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
+import { StarIcon, ClockIcon, ShieldCheckIcon, CheckIcon } from '@heroicons/react/24/outline';
 import PricingCard from '../components/pricing/PricingCard';
 import ValuePropsSection from '../components/pricing/ValuePropsSection';
-import FAQSection from '../components/pricing/FAQSection';
-import { plans, valueProps, faqs } from '../data/pricingData';
+import { plans, valueProps, addOns, calculator } from '../data/pricingData';
 
 const Pricing = () => {
-  const [billingCycle, setBillingCycle] = useState('one-time');
 
   return (
     <div className="pt-8">
@@ -188,7 +185,7 @@ const Pricing = () => {
                 </div>
               </motion.div>
 
-              {/* WebCraft AI */}
+              {/* Every Man's Website Design */}
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -202,7 +199,7 @@ const Pricing = () => {
                 </div>
                 
                 <h3 className="text-xl font-heading font-semibold mb-6 text-center text-primary-600 dark:text-primary-400">
-                  WebCraft AI
+                  Every Man's Website Design
                 </h3>
                 
                 <div className="space-y-4">
@@ -249,9 +246,6 @@ const Pricing = () => {
           </div>
         </div>
       </section>
-
-      {/* FAQ */}
-      <FAQSection faqs={faqs} />
 
       {/* CTA Section */}
       <section className="section-padding bg-gradient-to-r from-primary-600 to-secondary-600 text-white">

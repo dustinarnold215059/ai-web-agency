@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -6,15 +6,59 @@ import {
   ClockIcon,
   StarIcon,
   FunnelIcon,
+  XMarkIcon,
+  CheckIcon,
 } from '@heroicons/react/24/outline';
 
 const Portfolio = () => {
   const [activeFilter, setActiveFilter] = useState('all');
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isFilterChanging, setIsFilterChanging] = useState(false);
+  const modalRef = useRef(null);
+
+  // Focus trap for modal
+  useEffect(() => {
+    if (selectedProject && modalRef.current) {
+      const focusableElements = modalRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+
+      // Handle edge case where modal has no focusable elements
+      if (focusableElements.length === 0) {
+        return;
+      }
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      const handleKeyDown = (e) => {
+        if (e.key === 'Escape') {
+          setSelectedProject(null);
+        }
+
+        if (e.key === 'Tab' && focusableElements.length > 0) {
+          if (e.shiftKey && document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement?.focus();
+          } else if (!e.shiftKey && document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement?.focus();
+          }
+        }
+      };
+
+      document.addEventListener('keydown', handleKeyDown);
+      firstElement?.focus();
+
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [selectedProject]);
 
   const filters = [
     { id: 'all', name: 'All Projects' },
     { id: 'restaurant', name: 'Restaurants' },
-    { id: 'retail', name: 'Retail' },
     { id: 'healthcare', name: 'Healthcare' },
     { id: 'services', name: 'Professional Services' },
     { id: 'fitness', name: 'Fitness' },
@@ -32,8 +76,12 @@ const Portfolio = () => {
       features: ['Online Menu', 'Reservation System', 'Order Online'],
       testimonial: 'Orders increased by 200% in the first month!',
       client: 'Maria Rossi',
-      liveUrl: 'https://bellavista-demo.netlify.app',
+      liveUrl: null,
       beforeAfter: true,
+      description: 'A complete website redesign for an authentic Italian restaurant in downtown. We created a warm, inviting design that showcases their delicious menu and allows customers to make reservations online.',
+      challenge: 'The restaurant needed to increase online orders and streamline their reservation process.',
+      solution: 'We built a mobile-responsive website with integrated ordering system and real-time reservation booking.',
+      results: ['200% increase in online orders', '150% more reservations', '95% customer satisfaction rating'],
     },
     {
       id: 2,
@@ -46,22 +94,12 @@ const Portfolio = () => {
       features: ['Class Schedules', 'Membership Portal', 'Trainer Profiles'],
       testimonial: 'Professional, fast, and exactly what we needed.',
       client: 'Jake Thompson',
-      liveUrl: 'https://fitcore-gym-demo.netlify.app',
+      liveUrl: null,
       beforeAfter: false,
-    },
-    {
-      id: 3,
-      title: 'StyleHub Boutique',
-      category: 'retail',
-      industry: 'Fashion Retail',
-      deliveryTime: '7 days',
-      rating: 5,
-      image: '👗',
-      features: ['E-commerce', 'Inventory Management', 'Payment Processing'],
-      testimonial: 'Sales doubled within two weeks of launch!',
-      client: 'Sophie Chen',
-      liveUrl: 'https://stylehub-boutique-demo.netlify.app',
-      beforeAfter: true,
+      description: 'A modern, energetic website for a boutique fitness studio that needed to showcase their classes and allow members to book sessions online.',
+      challenge: 'The gym needed a way to manage class bookings and showcase their trainers and facilities.',
+      solution: 'We created a dynamic website with integrated booking system, trainer profiles, and class scheduling.',
+      results: ['300% increase in online bookings', '85% of members now use online portal', '4.8/5 member satisfaction rating'],
     },
     {
       id: 4,
@@ -74,7 +112,7 @@ const Portfolio = () => {
       features: ['Appointment Booking', 'Patient Portal', 'Service Info'],
       testimonial: 'Patient inquiries increased by 150%.',
       client: 'Dr. Michael Smith',
-      liveUrl: 'https://drsmith-dental-demo.netlify.app',
+      liveUrl: null,
       beforeAfter: false,
     },
     {
@@ -88,31 +126,17 @@ const Portfolio = () => {
       features: ['Practice Areas', 'Consultation Booking', 'Case Studies'],
       testimonial: 'Exactly what our firm needed. Very professional.',
       client: 'Sarah Johnson',
-      liveUrl: 'https://johnson-law-demo.netlify.app',
+      liveUrl: null,
       beforeAfter: false,
-    },
-    {
-      id: 6,
-      title: 'Green Thumb Garden Center',
-      category: 'retail',
-      industry: 'Garden Center',
-      deliveryTime: '7 days',
-      rating: 5,
-      image: '🌱',
-      features: ['Product Catalog', 'Care Guides', 'Online Store'],
-      testimonial: 'Beautiful design that showcases our plants perfectly.',
-      client: 'Tom Wilson',
-      liveUrl: 'https://greenthumb-garden-demo.netlify.app',
-      beforeAfter: true,
     },
   ];
 
-  const filteredProjects = activeFilter === 'all' 
-    ? projects 
+  const filteredProjects = activeFilter === 'all'
+    ? projects
     : projects.filter(project => project.category === activeFilter);
 
   const stats = [
-    { number: '500+', label: 'Projects Completed' },
+    { number: '10', label: 'Projects Completed' },
     { number: '98%', label: 'Client Satisfaction' },
     { number: '6.2', label: 'Average Delivery (Days)' },
     { number: '250%', label: 'Average ROI Increase' },
@@ -132,7 +156,7 @@ const Portfolio = () => {
               Our <span className="gradient-text">Portfolio</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
-              Discover how we've helped small businesses transform their online presence 
+              Discover how we've helped small businesses transform their online presence
               with AI-powered website design.
             </p>
           </motion.div>
@@ -169,7 +193,7 @@ const Portfolio = () => {
       </section>
 
       {/* Filter Section */}
-      <section className="py-8 bg-gray-50 dark:bg-gray-900 sticky top-20 z-40">
+      <section className="py-8 bg-gray-50 dark:bg-gray-900 sticky top-16 md:top-20 z-40">
         <div className="container-custom">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -181,19 +205,32 @@ const Portfolio = () => {
               <FunnelIcon className="w-5 h-5 text-gray-500" />
               <span className="text-gray-700 dark:text-gray-300 font-medium">Filter by Industry:</span>
             </div>
-            
+
             <div className="flex flex-wrap gap-2">
               {filters.map((filter) => (
                 <button
                   key={filter.id}
-                  onClick={() => setActiveFilter(filter.id)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  onClick={() => {
+                    setIsFilterChanging(true);
+                    setActiveFilter(filter.id);
+                    setTimeout(() => setIsFilterChanging(false), 300);
+                  }}
+                  disabled={isFilterChanging}
+                  aria-pressed={activeFilter === filter.id}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed ${
                     activeFilter === filter.id
                       ? 'bg-primary-600 text-white'
                       : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-primary-100 dark:hover:bg-gray-700'
                   }`}
                 >
-                  {filter.name}
+                  {isFilterChanging && activeFilter === filter.id ? (
+                    <span className="flex items-center">
+                      <span className="animate-spin mr-2 h-3 w-3 border-2 border-white border-t-transparent rounded-full"></span>
+                      {filter.name}
+                    </span>
+                  ) : (
+                    filter.name
+                  )}
                 </button>
               ))}
             </div>
@@ -226,7 +263,7 @@ const Portfolio = () => {
                     <div className="w-full h-48 bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900 dark:to-secondary-900 rounded-lg flex items-center justify-center text-6xl mb-4 group-hover:scale-105 transition-transform duration-300">
                       {project.image}
                     </div>
-                    
+
                     {project.beforeAfter && (
                       <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
                         Before/After Available
@@ -280,7 +317,10 @@ const Portfolio = () => {
 
                     {/* Actions */}
                     <div className="flex items-center space-x-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <button className="flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm font-medium">
+                      <button
+                        onClick={() => setSelectedProject(project)}
+                        className="flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm font-medium"
+                      >
                         <EyeIcon className="w-4 h-4 mr-1" />
                         View Details
                       </button>
@@ -328,7 +368,7 @@ const Portfolio = () => {
               From Concept to Launch
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              See how our AI-powered process delivers professional websites 
+              See how our AI-powered process delivers professional websites
               in just days, not months.
             </p>
           </motion.div>
@@ -399,16 +439,16 @@ const Portfolio = () => {
             <p className="text-xl mb-8 text-primary-100 max-w-2xl mx-auto">
               Let's create a website that helps your business grow and succeed online.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
-                to="/contact" 
+              <Link
+                to="/contact"
                 className="bg-white text-primary-600 hover:bg-gray-100 font-semibold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105"
               >
                 Start Your Project
               </Link>
-              <Link 
-                to="/pricing" 
+              <Link
+                to="/pricing"
                 className="border-2 border-white text-white hover:bg-white hover:text-primary-600 font-semibold py-4 px-8 rounded-lg transition-all duration-300"
               >
                 View Pricing
@@ -417,6 +457,151 @@ const Portfolio = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Project Details Modal */}
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            onClick={() => setSelectedProject(null)}
+          >
+            <motion.div
+              ref={modalRef}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-title"
+              className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <div>
+                  <h3 id="modal-title" className="text-2xl font-heading font-bold">
+                    {selectedProject.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {selectedProject.industry}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSelectedProject(null)}
+                  aria-label="Close modal"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                >
+                  <XMarkIcon className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="p-6 space-y-6">
+                {/* Project Image */}
+                <div className="w-full h-32 bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900 dark:to-secondary-900 rounded-lg flex items-center justify-center text-4xl">
+                  {selectedProject.image}
+                </div>
+
+                {/* Description */}
+                <div>
+                  <h4 className="font-heading font-semibold text-lg mb-2">Project Overview</h4>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {selectedProject.description}
+                  </p>
+                </div>
+
+                {/* Challenge & Solution */}
+                {selectedProject.challenge && (
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="font-heading font-semibold text-lg mb-2">Challenge</h4>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        {selectedProject.challenge}
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-heading font-semibold text-lg mb-2">Solution</h4>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        {selectedProject.solution}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Features */}
+                <div>
+                  <h4 className="font-heading font-semibold text-lg mb-3">Key Features</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProject.features.map((feature, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium"
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Results */}
+                {selectedProject.results && (
+                  <div>
+                    <h4 className="font-heading font-semibold text-lg mb-3">Results</h4>
+                    <div className="space-y-2">
+                      {selectedProject.results.map((result, index) => (
+                        <div key={index} className="flex items-center">
+                          <CheckIcon className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" />
+                          <span className="text-gray-600 dark:text-gray-400">{result}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Project Stats */}
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
+                      {selectedProject.deliveryTime}
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Delivery Time</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary-600 dark:text-primary-400 flex items-center justify-center">
+                      {[...Array(selectedProject.rating)].map((_, i) => (
+                        <StarIcon key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                      ))}
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Client Rating</div>
+                  </div>
+                </div>
+
+                {/* Testimonial */}
+                <blockquote className="border-l-4 border-primary-500 pl-4 italic text-gray-600 dark:text-gray-400">
+                  "{selectedProject.testimonial}"
+                  <footer className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    — {selectedProject.client}
+                  </footer>
+                </blockquote>
+
+                {/* CTA */}
+                <div className="flex justify-center pt-4">
+                  <Link
+                    to="/contact"
+                    onClick={() => setSelectedProject(null)}
+                    className="btn-primary"
+                  >
+                    Start Your Project
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import emailjs from '@emailjs/browser';
 import {
   MapPinIcon,
   PhoneIcon,
@@ -29,6 +31,29 @@ const Contact = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+  // Restore form data from localStorage on mount
+  useEffect(() => {
+    const savedFormData = localStorage.getItem('contact_form_data');
+    if (savedFormData) {
+      try {
+        const parsed = JSON.parse(savedFormData);
+        setFormData(prev => ({ ...prev, ...parsed }));
+      } catch (error) {
+        console.error('Error restoring form data:', error);
+      }
+    }
+  }, []);
+
+  // Save form data to localStorage on change (debounced)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (formData.name || formData.email || formData.businessName) {
+        localStorage.setItem('contact_form_data', JSON.stringify(formData));
+      }
+    }, 1000); // Debounce 1 second
+
+    return () => clearTimeout(timeoutId);
+  }, [formData]);
 
   // Validation functions
   const validateEmail = (email) => {
@@ -38,8 +63,8 @@ const Contact = () => {
 
   const validatePhone = (phone) => {
     if (!phone) return true; // Phone is optional
-    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-    return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
+    const phoneRegex = /^[+]?[\d\s\-().]{7,20}$/;
+    return phoneRegex.test(phone);
   };
 
   const validateForm = () => {
@@ -106,26 +131,93 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Mark all fields as touched
     const allFields = ['name', 'email', 'businessName', 'businessType'];
     setTouched(allFields.reduce((acc, field) => ({ ...acc, [field]: true }), {}));
-    
+
     if (!validateForm()) {
       return;
     }
 
     setIsLoading(true);
-    
+    setErrors({});
+
+    // Set timeout for the request
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false);
+      setErrors({ submit: 'Request timed out. Please check your connection and try again.' });
+    }, 30000); // 30 second timeout
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Form submitted:', formData);
+      // Prepare admin email data
+      const adminEmailData = {
+        from_name: formData.name,
+        from_email: formData.email,
+        phone: formData.phone || 'Not provided',
+        business_name: formData.businessName,
+        business_type: formData.businessType,
+        project_type: formData.projectType,
+        budget: formData.budget || 'Not specified',
+        timeline: formData.timeline || 'Not specified',
+        features: formData.features.length > 0 ? formData.features.join(', ') : 'None selected',
+        description: formData.description || 'No description provided',
+        hear_about: formData.hearAbout || 'Not specified'
+      };
+
+      // Prepare user confirmation email data
+      const userEmailData = {
+        user_name: formData.name,
+        user_email: formData.email,
+        business_name: formData.businessName,
+        project_type: formData.projectType,
+        budget: formData.budget || 'Not specified',
+        timeline: formData.timeline || 'Not specified'
+      };
+
+      // Send admin notification email
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_CONTACT_TEMPLATE,
+        adminEmailData,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+
+      // Send user confirmation email
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_CONTACT_ADMIN_TEMPLATE,
+        userEmailData,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+
+      clearTimeout(timeoutId);
       setIsSubmitted(true);
+      // Clear saved form data on successful submission
+      localStorage.removeItem('contact_form_data');
+      // Scroll to top to show Thank You message
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
-      console.error('Error submitting form:', error);
-      setErrors({ submit: 'There was an error submitting your form. Please try again.' });
+      clearTimeout(timeoutId);
+      if (import.meta.env.DEV) {
+        console.error('EmailJS Error:', error);
+      }
+
+      // Provide more specific error messages
+      let errorMessage = 'There was an error submitting your form. Please try again.';
+      if (error.text) {
+        if (error.text.includes('network') || error.text.includes('Failed to fetch')) {
+          errorMessage = 'Network error. Please check your internet connection and try again.';
+        } else if (error.status === 400) {
+          errorMessage = 'Invalid form data. Please check your entries and try again.';
+        } else if (error.status === 401 || error.status === 403) {
+          errorMessage = 'Service temporarily unavailable. Please contact us directly.';
+        }
+      }
+
+      setErrors({ submit: errorMessage });
     } finally {
+      clearTimeout(timeoutId);
       setIsLoading(false);
     }
   };
@@ -133,13 +225,11 @@ const Contact = () => {
   const projectTypes = [
     { value: 'new-website', label: 'New Website', description: 'Build a brand new website from scratch' },
     { value: 'redesign', label: 'Website Redesign', description: 'Modernize your existing website' },
-    { value: 'ecommerce', label: 'E-commerce Store', description: 'Online store with payment processing' },
     { value: 'landing-page', label: 'Landing Page', description: 'Single page for marketing campaigns' },
   ];
 
   const businessTypes = [
     'Restaurant/Food Service',
-    'Retail/E-commerce',
     'Healthcare/Medical',
     'Professional Services',
     'Real Estate',
@@ -167,7 +257,6 @@ const Contact = () => {
   ];
 
   const features = [
-    'Online Store/E-commerce',
     'Appointment Booking',
     'Contact Forms',
     'Photo Gallery',
@@ -183,19 +272,14 @@ const Contact = () => {
 
   const contactInfo = [
     {
-      icon: MapPinIcon,
-      title: 'Address',
-      details: ['123 Business Ave, Suite 100', 'Anytown, ST 12345'],
-    },
-    {
       icon: PhoneIcon,
       title: 'Phone',
-      details: ['(555) 123-4567', 'Mon-Fri: 9AM-6PM EST'],
+      details: ['(734) 577-7138', 'Mon-Fri: 9AM-6PM EST'],
     },
     {
       icon: EnvelopeIcon,
       title: 'Email',
-      details: ['hello@webcraftai.com', 'Response within 24 hours'],
+      details: ['everymanswebsitedesign@gmail.com', 'Response within 24 hours'],
     },
     {
       icon: ClockIcon,
@@ -334,7 +418,7 @@ const Contact = () => {
                     <label className="block text-sm font-medium mb-3">
                       What type of project do you need? *
                     </label>
-                    <div className="grid md:grid-cols-2 gap-3">
+                    <div className="grid lg:grid-cols-2 gap-3">
                       {projectTypes.map((type) => (
                         <label
                           key={type.value}
@@ -362,13 +446,14 @@ const Contact = () => {
                   </div>
 
                   {/* Contact Information */}
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid lg:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2">
+                      <label htmlFor="name" className="block text-sm font-medium mb-2">
                         Your Name *
                       </label>
                       <input
                         type="text"
+                        id="name"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
@@ -386,11 +471,12 @@ const Contact = () => {
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">
+                      <label htmlFor="email" className="block text-sm font-medium mb-2">
                         Email Address *
                       </label>
                       <input
                         type="email"
+                        id="email"
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
@@ -409,13 +495,14 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid lg:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2">
+                      <label htmlFor="phone" className="block text-sm font-medium mb-2">
                         Phone Number
                       </label>
                       <input
                         type="tel"
+                        id="phone"
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
@@ -425,18 +512,19 @@ const Contact = () => {
                             ? 'border-red-500 focus:ring-red-500'
                             : 'border-gray-300 dark:border-gray-600 focus:ring-primary-500'
                         }`}
-                        placeholder="(555) 123-4567"
+                        placeholder="(734) 577-7138"
                       />
                       {errors.phone && touched.phone && (
                         <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.phone}</p>
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">
+                      <label htmlFor="businessName" className="block text-sm font-medium mb-2">
                         Business Name *
                       </label>
                       <input
                         type="text"
+                        id="businessName"
                         name="businessName"
                         value={formData.businessName}
                         onChange={handleInputChange}
@@ -456,12 +544,13 @@ const Contact = () => {
                   </div>
 
                   {/* Business Details */}
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid lg:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2">
+                      <label htmlFor="businessType" className="block text-sm font-medium mb-2">
                         Business Type *
                       </label>
                       <select
+                        id="businessType"
                         name="businessType"
                         value={formData.businessType}
                         onChange={handleInputChange}
@@ -483,10 +572,11 @@ const Contact = () => {
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">
+                      <label htmlFor="timeline" className="block text-sm font-medium mb-2">
                         Preferred Timeline
                       </label>
                       <select
+                        id="timeline"
                         name="timeline"
                         value={formData.timeline}
                         onChange={handleInputChange}
@@ -502,10 +592,11 @@ const Contact = () => {
 
                   {/* Budget */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">
+                    <label htmlFor="budget" className="block text-sm font-medium mb-2">
                       Budget Range
                     </label>
                     <select
+                      id="budget"
                       name="budget"
                       value={formData.budget}
                       onChange={handleInputChange}
@@ -543,10 +634,11 @@ const Contact = () => {
 
                   {/* Project Description */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">
+                    <label htmlFor="description" className="block text-sm font-medium mb-2">
                       Project Description
                     </label>
                     <textarea
+                      id="description"
                       name="description"
                       value={formData.description}
                       onChange={handleInputChange}
@@ -558,10 +650,11 @@ const Contact = () => {
 
                   {/* How did you hear about us */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">
+                    <label htmlFor="hearAbout" className="block text-sm font-medium mb-2">
                       How did you hear about us?
                     </label>
                     <select
+                      id="hearAbout"
                       name="hearAbout"
                       value={formData.hearAbout}
                       onChange={handleInputChange}
@@ -624,7 +717,7 @@ const Contact = () => {
                 </h3>
                 
                 <div className="space-y-6">
-                  {contactInfo.map((info, index) => (
+                  {contactInfo.map((info) => (
                     <div key={info.title} className="flex items-start space-x-4">
                       <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center flex-shrink-0">
                         <info.icon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
@@ -657,9 +750,14 @@ const Contact = () => {
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
                   Book a free 15-minute consultation to discuss your project.
                 </p>
-                <button className="btn-outline w-full">
+                <a
+                  href="https://calendly.com/everymanswebsitedesign/starting-consultation"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-outline w-full inline-block"
+                >
                   Schedule Consultation
-                </button>
+                </a>
               </motion.div>
 
               {/* FAQ Link */}
@@ -677,12 +775,12 @@ const Contact = () => {
                   Check out our FAQ or learn more about our process.
                 </p>
                 <div className="space-y-2">
-                  <button className="btn-outline w-full text-sm">
+                  <Link to="/faq" className="btn-outline w-full text-sm inline-block">
                     View FAQ
-                  </button>
-                  <button className="btn-outline w-full text-sm">
+                  </Link>
+                  <Link to="/how-it-works" className="btn-outline w-full text-sm inline-block">
                     How It Works
-                  </button>
+                  </Link>
                 </div>
               </motion.div>
             </div>

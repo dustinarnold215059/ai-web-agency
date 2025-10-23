@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import {
   ComputerDesktopIcon,
   DevicePhoneMobileIcon,
-  ShoppingCartIcon,
   MagnifyingGlassIcon,
   CogIcon,
   PaintBrushIcon,
@@ -34,14 +33,6 @@ const Services = () => {
       popular: true,
     },
     {
-      icon: ShoppingCartIcon,
-      title: 'E-commerce Websites',
-      description: 'Complete online stores with payment processing, inventory management, and more.',
-      features: ['Payment Integration', 'Inventory System', 'Product Catalog', 'Order Management'],
-      price: 'Starting at $1,497',
-      popular: false,
-    },
-    {
       icon: DevicePhoneMobileIcon,
       title: 'Landing Pages',
       description: 'High-converting landing pages designed to capture leads and drive sales.',
@@ -56,7 +47,7 @@ const Services = () => {
       icon: MagnifyingGlassIcon,
       title: 'SEO Optimization',
       description: 'Improve your search engine rankings and drive more organic traffic.',
-      price: '$297/month',
+      price: '$297 one-time',
     },
     {
       icon: CogIcon,
@@ -74,7 +65,6 @@ const Services = () => {
 
   const industries = [
     { name: 'Restaurants & Food', icon: '🍕', description: 'Menu displays, online ordering, reservation systems' },
-    { name: 'Retail & E-commerce', icon: '🛍️', description: 'Product catalogs, shopping carts, payment processing' },
     { name: 'Healthcare', icon: '🏥', description: 'Appointment booking, patient portals, HIPAA compliance' },
     { name: 'Professional Services', icon: '💼', description: 'Service listings, client portals, consultation booking' },
     { name: 'Real Estate', icon: '🏠', description: 'Property listings, virtual tours, lead capture' },
@@ -155,7 +145,7 @@ const Services = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`relative card hover-lift ${service.popular ? 'ring-2 ring-primary-500' : ''}`}
+                className={`relative card hover-lift h-full ${service.popular ? 'ring-2 ring-primary-500' : ''}`}
               >
                 {service.popular && (
                   <div className="absolute -top-3 left-6 bg-primary-500 text-white px-4 py-1 rounded-full text-sm font-medium">
@@ -272,7 +262,7 @@ const Services = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="card hover-lift text-center"
+                className="card hover-lift text-center h-full"
               >
                 <div className="w-16 h-16 mx-auto mb-4 bg-secondary-100 dark:bg-secondary-900 rounded-2xl flex items-center justify-center">
                   <service.icon className="w-8 h-8 text-secondary-600 dark:text-secondary-400" />
@@ -321,7 +311,7 @@ const Services = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05 }}
                 viewport={{ once: true }}
-                className="card hover-lift text-center"
+                className="card hover-lift text-center h-full"
               >
                 <div className="text-4xl mb-3">{industry.icon}</div>
                 <h3 className="font-heading font-semibold mb-2">

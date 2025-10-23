@@ -1,16 +1,7 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { ThemeContext } from './ThemeContextDefinition';
 
-const ThemeContext = createContext();
-
-export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider');
-  }
-  return context;
-};
-
-export const ThemeProvider = ({ children }) => {
+export function ThemeProvider({ children }) {
   const [darkMode, setDarkMode] = useState(() => {
     // Check if there's a saved preference
     const saved = localStorage.getItem('darkMode');
@@ -25,13 +16,13 @@ export const ThemeProvider = ({ children }) => {
     // Save preference to localStorage
     localStorage.setItem('darkMode', JSON.stringify(darkMode));
     
-    // Apply theme to document using data attribute for Tailwind v4
+    // Apply theme to document
     if (darkMode) {
-      document.documentElement.setAttribute('data-theme', 'dark');
       document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
     } else {
-      document.documentElement.removeAttribute('data-theme');
       document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
     }
   }, [darkMode]);
 
@@ -50,4 +41,4 @@ export const ThemeProvider = ({ children }) => {
       {children}
     </ThemeContext.Provider>
   );
-};
+}

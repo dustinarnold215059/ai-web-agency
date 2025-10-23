@@ -37,37 +37,23 @@ const About = () => {
 
   const team = [
     {
-      name: 'Sarah Johnson',
-      role: 'Founder & CEO',
-      image: '👩‍💼',
-      bio: 'Former agency owner who experienced firsthand the pain points of traditional web design. Founded WebCraft AI to democratize professional web design.',
-      expertise: ['Business Strategy', 'AI Technology', 'Small Business Growth'],
+      name: 'Dustin Arnold',
+      role: 'Founder & CEO & Lead Designer',
+      image: '👨‍💼',
+      bio: 'Founder of Everyman\'s Website Design with a passion for helping small businesses succeed online through innovative AI-powered web design solutions.',
+      expertise: ['Business Strategy', 'Web Design', 'AI Technology', 'Small Business Growth'],
     },
     {
-      name: 'Michael Chen',
-      role: 'Head of AI Development',
-      image: '👨‍💻',
-      bio: 'AI researcher and engineer with 10+ years experience in machine learning. Leads our AI design generation technology.',
-      expertise: ['Machine Learning', 'AI Development', 'Web Technologies'],
-    },
-    {
-      name: 'Emily Rodriguez',
-      role: 'Lead Designer',
-      image: '🎨',
-      bio: 'Award-winning designer who ensures every AI-generated design meets our quality standards and reflects current design trends.',
-      expertise: ['UI/UX Design', 'Brand Identity', 'Design Systems'],
-    },
-    {
-      name: 'David Thompson',
+      name: 'Maria Arnold',
       role: 'Customer Success',
       image: '🤝',
       bio: 'Dedicated to ensuring every client has an amazing experience. Manages client relationships and ensures project success.',
-      expertise: ['Client Relations', 'Project Management', 'Small Business Consulting'],
+      expertise: ['Client Relations', 'Project Management', 'Customer Support'],
     },
   ];
 
   const stats = [
-    { number: '500+', label: 'Websites Created', description: 'Successful projects delivered' },
+    { number: '10', label: 'Websites Created', description: 'Successful projects delivered' },
     { number: '98%', label: 'Client Satisfaction', description: 'Happy customers' },
     { number: '6.2', label: 'Avg. Delivery Days', description: 'Lightning fast turnaround' },
     { number: '87%', label: 'Cost Savings', description: 'Compared to traditional agencies' },
@@ -75,28 +61,28 @@ const About = () => {
 
   const timeline = [
     {
-      year: '2023',
+      year: '2025',
       title: 'The Vision',
-      description: 'Founded with the mission to make professional web design accessible to small businesses through AI technology.',
+      description: 'Founded Everyman\'s Website Design with the mission to make professional web design accessible to small businesses through AI technology.',
       milestone: 'Company Founded',
     },
     {
-      year: '2023',
-      title: 'AI Development',
-      description: 'Developed our proprietary AI design generation system, trained on thousands of high-performing websites.',
-      milestone: 'AI Technology Launched',
+      year: '2025',
+      title: 'AI-Powered Development',
+      description: 'Leveraged Claude Code for website development, combining AI efficiency with human creativity to deliver exceptional results.',
+      milestone: 'Claude Code Integration',
     },
     {
-      year: '2024',
-      title: 'Rapid Growth',
-      description: 'Served our first 100 clients, refined our process, and achieved 98% client satisfaction rate.',
-      milestone: '100 Websites Delivered',
+      year: '2025',
+      title: 'Building Excellence',
+      description: 'Establishing our reputation for quality, speed, and affordability in web design for small businesses.',
+      milestone: 'Growing & Serving',
     },
     {
-      year: '2024',
-      title: 'Scale & Innovation',
-      description: 'Expanded our team, enhanced our AI capabilities, and now serve small businesses nationwide.',
-      milestone: '500+ Websites & Growing',
+      year: '2025',
+      title: 'Expanding Reach',
+      description: 'Continuing to refine our AI-powered process with a focus on serving small businesses in the Metro Detroit area and beyond.',
+      milestone: 'Metro Detroit Focus',
     },
   ];
 
@@ -261,12 +247,12 @@ const About = () => {
               Meet Our Team
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              The passionate people behind WebCraft AI, dedicated to helping 
+              The passionate people behind Every Man's Website Design, dedicated to helping 
               small businesses succeed online.
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
             {team.map((member, index) => (
               <motion.div
                 key={member.name}
@@ -404,7 +390,7 @@ const About = () => {
             className="text-center"
           >
             <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">
-              Why Small Businesses Choose WebCraft AI
+              Why Small Businesses Choose Every Man's Website Design
             </h2>
             
             <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mt-12">

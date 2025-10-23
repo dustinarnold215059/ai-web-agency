@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 
-const FAQSection = ({ faqs }) => {
+const FAQSection = ({ faqs, hideHeader = false }) => {
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggleFAQ = (index) => {
@@ -12,20 +12,22 @@ const FAQSection = ({ faqs }) => {
   return (
     <section className="section-padding bg-gray-50 dark:bg-gray-900">
       <div className="container-custom max-w-4xl">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <QuestionMarkCircleIcon className="w-12 h-12 text-primary-600 dark:text-primary-400 mx-auto mb-4" />
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
-            Everything you need to know about our pricing and services.
-          </p>
-        </motion.div>
+        {!hideHeader && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <QuestionMarkCircleIcon className="w-12 h-12 text-primary-600 dark:text-primary-400 mx-auto mb-4" />
+            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
+              Everything you need to know about our pricing and services.
+            </p>
+          </motion.div>
+        )}
 
         <div className="space-y-4">
           {faqs.map((faq, index) => (
@@ -40,6 +42,9 @@ const FAQSection = ({ faqs }) => {
               <button
                 onClick={() => toggleFAQ(index)}
                 className="w-full text-left flex items-center justify-between p-2 focus:outline-none"
+                aria-expanded={openIndex === index}
+                aria-controls={`faq-content-${index}`}
+                aria-label={`Toggle FAQ: ${faq.question}`}
               >
                 <h3 className="font-heading font-semibold text-lg">
                   {faq.question}
@@ -52,7 +57,7 @@ const FAQSection = ({ faqs }) => {
                   +
                 </motion.div>
               </button>
-              
+
               <AnimatePresence>
                 {openIndex === index && (
                   <motion.div
@@ -61,6 +66,7 @@ const FAQSection = ({ faqs }) => {
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.3 }}
                     className="overflow-hidden"
+                    id={`faq-content-${index}`}
                   >
                     <div className="pt-4 pb-2 px-2">
                       <p className="text-gray-600 dark:text-gray-400">

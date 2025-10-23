@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
@@ -7,47 +7,16 @@ import {
   PhoneIcon,
   ClockIcon
 } from '@heroicons/react/24/outline';
-import { CONTACT_INFO, COMPANY_INFO, SOCIAL_LINKS } from '../constants/contact';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    // Check if user has already subscribed
-    const hasSubscribed = localStorage.getItem('newsletter_subscribed');
-    if (hasSubscribed) {
-      setSubscribed(true);
-    }
-  }, []);
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
 
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-
-    // Check if already subscribed
-    if (localStorage.getItem('newsletter_subscribed')) {
-      setError('You have already subscribed to our newsletter!');
-      return;
-    }
-
-    if (!email.trim()) {
-      setError('Please enter your email address');
-      return;
-    }
-
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email address');
-      return;
-    }
+    if (!email || !email.includes('@')) return;
 
     setSubscribing(true);
 
@@ -76,13 +45,10 @@ const Footer = () => {
 
       setSubscribed(true);
       setEmail('');
-      localStorage.setItem('newsletter_subscribed', 'true');
-      // Don't reset subscribed state - keep it permanent
+      setTimeout(() => setSubscribed(false), 5000);
     } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error('Newsletter subscription error:', error);
-      }
-      setError('Sorry, there was an error subscribing. Please try again.');
+      console.error('Newsletter subscription error:', error);
+      alert('Sorry, there was an error subscribing. Please try again.');
     } finally {
       setSubscribing(false);
     }
@@ -125,23 +91,23 @@ const Footer = () => {
   const contactInfo = [
     {
       icon: EnvelopeIcon,
-      text: CONTACT_INFO.email
+      text: 'everymanswebsitedesign@gmail.com'
     },
     {
       icon: PhoneIcon,
-      text: CONTACT_INFO.phone
+      text: '(734) 577-7138'
     },
     {
       icon: ClockIcon,
-      text: CONTACT_INFO.businessHours.display
+      text: 'Mon-Fri: 9AM-6PM EST'
     }
   ];
 
   const socialLinks = [
-    { name: 'Twitter', href: SOCIAL_LINKS.twitter, icon: '𝕏' },
-    { name: 'LinkedIn', href: SOCIAL_LINKS.linkedin, icon: '💼' },
-    { name: 'Facebook', href: SOCIAL_LINKS.facebook, icon: '📘' },
-    { name: 'Instagram', href: SOCIAL_LINKS.instagram, icon: '📷' },
+    { name: 'Twitter', href: 'https://twitter.com', icon: '𝕏' },
+    { name: 'LinkedIn', href: 'https://linkedin.com', icon: '💼' },
+    { name: 'Facebook', href: 'https://facebook.com', icon: '📘' },
+    { name: 'Instagram', href: 'https://instagram.com', icon: '📷' },
   ];
 
   return (
@@ -157,15 +123,17 @@ const Footer = () => {
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 transition={{ duration: 0.2 }}
               >
-                <span className="text-white font-bold text-xl">{COMPANY_INFO.shortName}</span>
+                <span className="text-white font-bold text-xl">EW</span>
               </motion.div>
               <span className="text-2xl font-heading font-bold gradient-text">
-                {COMPANY_INFO.name}
+                Everyman's Website Design
               </span>
             </Link>
 
             <p className="text-gray-400 mb-6 leading-relaxed">
-              {COMPANY_INFO.tagline} {COMPANY_INFO.description}
+              Empowering small businesses with AI-powered website design.
+              Fast, affordable, and professional websites that help your
+              business grow online.
             </p>
 
             {/* Contact Info */}
@@ -230,35 +198,26 @@ const Footer = () => {
                 Thanks for subscribing! Check your email for confirmation.
               </div>
             ) : (
-              <div>
-                <form onSubmit={handleNewsletterSubmit} className="flex space-x-2 mb-2">
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    aria-label="Email address for newsletter"
-                    aria-describedby={error ? 'newsletter-error' : undefined}
-                    aria-invalid={error ? 'true' : 'false'}
-                    disabled={subscribing}
-                    className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50"
-                  />
-                  <motion.button
-                    type="submit"
-                    className="btn-primary whitespace-nowrap"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    disabled={subscribing}
-                  >
-                    {subscribing ? 'Subscribing...' : 'Subscribe'}
-                  </motion.button>
-                </form>
-                {error && (
-                  <p id="newsletter-error" className="text-red-400 text-sm mt-1" role="alert">
-                    {error}
-                  </p>
-                )}
-              </div>
+              <form onSubmit={handleNewsletterSubmit} className="flex space-x-2">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={subscribing}
+                  className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50"
+                />
+                <motion.button
+                  type="submit"
+                  className="btn-primary whitespace-nowrap"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  disabled={subscribing}
+                >
+                  {subscribing ? 'Subscribing...' : 'Subscribe'}
+                </motion.button>
+              </form>
             )}
           </div>
         </div>
@@ -269,7 +228,7 @@ const Footer = () => {
         <div className="container-custom py-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm">
-              © {currentYear} {COMPANY_INFO.name}. All rights reserved.
+              © {currentYear} Everyman's Website Design. All rights reserved.
             </p>
 
             {/* Social Links */}
@@ -280,8 +239,7 @@ const Footer = () => {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`Visit our ${social.name} page`}
-                  className="w-10 h-10 bg-gray-800 hover:bg-primary-600 rounded-lg flex items-center justify-center transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-10 h-10 bg-gray-800 hover:bg-primary-600 rounded-lg flex items-center justify-center transition-colors duration-200"
                   whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.9 }}
                   initial={{ opacity: 0, y: 20 }}
@@ -289,7 +247,7 @@ const Footer = () => {
                   transition={{ delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
-                  <span className="text-sm" aria-hidden="true">{social.icon}</span>
+                  <span className="text-sm">{social.icon}</span>
                 </motion.a>
               ))}
             </div>
@@ -297,11 +255,11 @@ const Footer = () => {
             {/* Trust Badges */}
             <div className="flex items-center space-x-4 text-xs text-gray-500">
               <span className="flex items-center space-x-1">
-                <span className="w-2 h-2 bg-green-500 rounded-full" aria-hidden="true"></span>
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                 <span>SSL Secured</span>
               </span>
               <span className="flex items-center space-x-1">
-                <span className="w-2 h-2 bg-blue-500 rounded-full" aria-hidden="true"></span>
+                <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                 <span>GDPR Compliant</span>
               </span>
             </div>

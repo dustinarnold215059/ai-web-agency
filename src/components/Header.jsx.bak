@@ -52,11 +52,8 @@ const Header = () => {
             >
               <span className="text-white font-bold text-xl">EM</span>
             </motion.div>
-            <span className="text-lg sm:text-2xl font-heading font-bold gradient-text hidden sm:inline">
+            <span className="text-2xl font-heading font-bold gradient-text">
               Every Man's Website Design
-            </span>
-            <span className="text-lg font-heading font-bold gradient-text sm:hidden">
-              EMWD
             </span>
           </Link>
 

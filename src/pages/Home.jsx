@@ -24,7 +24,7 @@ const Home = () => {
     {
       icon: CurrencyDollarIcon,
       title: 'Affordable',
-      description: 'Starting at just $997',
+      description: 'Starting at just $497',
       stat: '70% Less',
     },
     {
@@ -67,7 +67,7 @@ const Home = () => {
       name: 'Sarah Johnson',
       business: 'Boutique Bakery',
       rating: 5,
-      text: 'WebCraft AI transformed my bakery\'s online presence in just 6 days. Orders increased by 300% in the first month!',
+      text: 'Every Man\'s Website Design transformed my bakery\'s online presence in just 6 days. Orders increased by 300% in the first month!',
       image: '👩‍🍳',
     },
     {
@@ -87,7 +87,7 @@ const Home = () => {
   ];
 
   const stats = [
-    { number: '500+', label: 'Websites Created' },
+    { number: '10', label: 'Websites Created' },
     { number: '5-7', label: 'Days Delivery' },
     { number: '98%', label: 'Client Satisfaction' },
     { number: '24/7', label: 'Support Available' },
@@ -105,7 +105,7 @@ const Home = () => {
         </div>
 
         <div className="container-custom relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
             {/* Hero Content */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -151,11 +151,11 @@ const Home = () => {
                 transition={{ delay: 0.5 }}
                 className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
               >
-                <Link to="/contact" className="btn-primary text-lg px-8 py-4">
+                <Link to="/contact" className="btn-primary text-lg px-8 py-4 inline-flex items-center justify-center">
                   Get Started Today
                   <RocketLaunchIcon className="w-5 h-5 ml-2" />
                 </Link>
-                <Link to="/portfolio" className="btn-outline text-lg px-8 py-4">
+                <Link to="/portfolio" className="btn-outline text-lg px-8 py-4 inline-flex items-center justify-center">
                   View Portfolio
                 </Link>
               </motion.div>
@@ -423,7 +423,7 @@ const Home = () => {
               Ready to Transform Your Business Online?
             </h2>
             <p className="text-xl mb-8 text-primary-100 max-w-2xl mx-auto">
-              Join hundreds of successful small businesses who chose WebCraft AI 
+              Join hundreds of successful small businesses who chose Every Man's Website Design 
               for their website needs. Get started today!
             </p>
             
