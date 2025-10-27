@@ -231,7 +231,7 @@ const Footer = () => {
               </div>
             ) : (
               <div>
-                <form onSubmit={handleNewsletterSubmit} className="flex space-x-2 mb-2">
+                <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-2 mb-2">
                   <input
                     type="email"
                     placeholder="Enter your email"
@@ -241,11 +241,11 @@ const Footer = () => {
                     aria-describedby={error ? 'newsletter-error' : undefined}
                     aria-invalid={error ? 'true' : 'false'}
                     disabled={subscribing}
-                    className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50"
+                    className="flex-1 w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50"
                   />
                   <motion.button
                     type="submit"
-                    className="btn-primary whitespace-nowrap"
+                    className="btn-primary whitespace-nowrap w-full sm:w-auto"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     disabled={subscribing}
