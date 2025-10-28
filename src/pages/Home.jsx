@@ -64,21 +64,21 @@ const Home = () => {
 
   const testimonials = [
     {
-      name: 'Giuseppe Romano',
+      name: 'Mike Johnson',
+      business: 'Mike\'s Handyman Services',
+      rating: 5,
+      text: 'Simple, professional landing page that brings in leads daily!',
+      image: '🔨',
+    },
+    {
+      name: 'Chef Antonio Rossi',
       business: 'Bella Vita Ristorante',
       rating: 5,
       text: 'Reservations doubled since launching our new website!',
       image: '🍝',
     },
     {
-      name: 'Marcus Thompson',
-      business: 'IronCore Fitness',
-      rating: 5,
-      text: 'Our online presence finally matches the quality of our gym!',
-      image: '💪',
-    },
-    {
-      name: 'Dr. Sarah Chen',
+      name: 'Dr. James Anderson',
       business: 'Bright Smile Dental Care',
       rating: 5,
       text: 'Patient inquiries increased by 150% in the first month!',
