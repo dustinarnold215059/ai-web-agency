@@ -64,24 +64,24 @@ const Home = () => {
 
   const testimonials = [
     {
-      name: 'Mike Johnson',
-      business: 'Mike\'s Handyman Services',
+      name: 'Giuseppe Romano',
+      business: 'Bella Vita Ristorante',
       rating: 5,
-      text: 'Simple, professional landing page that brings in leads daily! Every Man\'s Website Design delivered exactly what I needed.',
-      image: '🔨',
+      text: 'Reservations doubled since launching our new website!',
+      image: '🍝',
     },
     {
       name: 'Marcus Thompson',
       business: 'IronCore Fitness',
       rating: 5,
-      text: 'Our online presence finally matches the quality of our gym! The AI-powered design perfectly captured our brand.',
+      text: 'Our online presence finally matches the quality of our gym!',
       image: '💪',
     },
     {
       name: 'Dr. Sarah Chen',
       business: 'Bright Smile Dental Care',
       rating: 5,
-      text: 'Patient inquiries increased by 150% in the first month! Professional, fast, and incredibly affordable.',
+      text: 'Patient inquiries increased by 150% in the first month!',
       image: '🦷',
     },
   ];
