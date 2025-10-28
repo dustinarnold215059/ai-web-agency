@@ -107,7 +107,7 @@ const About = () => {
               transition={{ duration: 0.8 }}
             >
               <h1 className="text-4xl md:text-5xl font-heading font-bold mb-6">
-                Empowering Small Businesses with 
+                Empowering Small Businesses with{' '}
                 <span className="gradient-text">AI-Powered Design</span>
               </h1>
               <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
@@ -115,11 +115,11 @@ const About = () => {
                 that helps them grow. Our AI technology makes this possible at 
                 a fraction of traditional costs.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/contact" className="btn-primary">
+              <div className="flex flex-col sm:flex-row gap-4 items-center justify-center sm:justify-start">
+                <Link to="/contact" className="btn-primary w-full sm:w-auto text-center">
                   Start Your Project
                 </Link>
-                <Link to="/how-it-works" className="btn-outline">
+                <Link to="/how-it-works" className="btn-outline w-full sm:w-auto text-center">
                   Learn Our Process
                 </Link>
               </div>
